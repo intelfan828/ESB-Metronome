@@ -239,8 +239,10 @@ label {
   background-color: #333;
   padding: 20px;
   border-radius: 8px;
-  width: 400px;
-  padding: 20px;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .form-input {
@@ -281,12 +283,15 @@ label {
   background-color: #333;
   padding: 20px;
   border-radius: 8px;
-  width: 400px;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .setlist-select {
   width: 100%;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .active-setlist {
@@ -415,6 +420,9 @@ optgroup label {
   width: 100%;
   max-width: 400px;
   margin: 0 auto 20px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .song-dropdown-trigger {
@@ -434,25 +442,14 @@ optgroup label {
   justify-content: center;
   position: relative;
 }
-.dropdown-trigger-text {
-  flex: 1 1 auto;
-  text-align: center;
-}
-.dropdown-trigger-arrow {
-  flex: 0 0 22px;
-  width: 22px;
-  text-align: center;
-  font-size: 18px;
-  color: #fff;
-  margin-left: 8px;
-  margin-right: 6px;
-}
 
 .song-list-dropdown {
   position: absolute;
   top: 110%;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   width: 100%;
+  max-width: 400px;
   background: #444;
   border: 1px solid #333;
   border-radius: 8px;
@@ -571,7 +568,11 @@ optgroup label {
 }
 
 @media (max-width: 768px) {
-  .song-dropdown, .song-dropdown-trigger, .song-list-dropdown {
+  .song-dropdown, 
+  .song-dropdown-trigger, 
+  .song-list-dropdown,
+  .add-song-form,
+  .setlist-form {
     max-width: 300px;
   }
 }
