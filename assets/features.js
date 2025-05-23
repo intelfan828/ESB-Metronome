@@ -468,6 +468,28 @@ function displaySetlist(setlist) {
     setlistSongs.appendChild(songElement);
   });
 
+  // Add save button
+  const saveButton = document.createElement("button");
+  saveButton.className = "save-setlist-button";
+  saveButton.textContent = "Save Setlist";
+  saveButton.style.marginTop = "10px";
+  saveButton.style.padding = "8px 16px";
+  saveButton.style.backgroundColor = "#1976D2";
+  saveButton.style.color = "white";
+  saveButton.style.border = "none";
+  saveButton.style.borderRadius = "4px";
+  saveButton.style.cursor = "pointer";
+  saveButton.onclick = () => {
+    const savedSetlists = JSON.parse(localStorage.getItem("setlists"));
+    const setlistIndex = savedSetlists.findIndex(s => s.id === setlist.id);
+    if (setlistIndex !== -1) {
+      savedSetlists[setlistIndex] = setlist;
+      localStorage.setItem("setlists", JSON.stringify(savedSetlists));
+      alert("Setlist saved successfully!");
+    }
+  };
+  setlistSongs.appendChild(saveButton);
+
   activeSetlist.style.display = "block";
 }
 
