@@ -99,11 +99,9 @@ const startStopButton = document.getElementById("start-stop");
 const songSelect = document.getElementById("song-select");
 const soundToggleButton = document.getElementById("sound-toggle");
 const saveBpmButton = document.getElementById("save-bpm");
-const addSongToggle = document.getElementById("add-song-toggle");
 const addSongForm = document.getElementById("add-song-form");
 const submitNewSong = document.getElementById("submit-new-song");
 const cancelAddSong = document.getElementById("cancel-add-song");
-const createSetlistToggle = document.getElementById("create-setlist-toggle");
 const createSetlistForm = document.getElementById("create-setlist-form");
 const submitNewSetlist = document.getElementById("submit-new-setlist");
 const cancelCreateSetlist = document.getElementById("cancel-create-setlist");
@@ -593,10 +591,6 @@ function initializeUI() {
   });
 
   // Add song form
-  addSongToggle.addEventListener("click", () => {
-    addSongForm.style.display = addSongForm.style.display === "none" ? "block" : "none";
-  });
-
   submitNewSong.addEventListener("click", () => {
     const nameInput = document.getElementById("new-song-name");
     const artistInput = document.getElementById("new-song-artist");
@@ -621,19 +615,17 @@ function initializeUI() {
         artistInput.value = "";
         bpmInput.value = "";
         addSongForm.style.display = "none";
+        closeSongDropdown();
       }
     }
   });
 
   cancelAddSong.addEventListener("click", () => {
     addSongForm.style.display = "none";
+    closeSongDropdown();
   });
 
   // Setlist management
-  createSetlistToggle.addEventListener("click", () => {
-    createSetlistForm.style.display = createSetlistForm.style.display === "none" ? "block" : "none";
-  });
-
   submitNewSetlist.addEventListener("click", () => {
     const nameInput = document.getElementById("new-setlist-name");
     const name = nameInput.value.trim();
@@ -657,23 +649,26 @@ function initializeUI() {
 
   cancelCreateSetlist.addEventListener("click", () => {
     createSetlistForm.style.display = "none";
+    setlistSelect.value = ""; // Reset selection
   });
 
   setlistSelect.addEventListener("change", () => {
     const selectedSetlistId = setlistSelect.value;
     if (selectedSetlistId === "create_new") {
       createSetlistForm.style.display = "block";
-      setlistSelect.value = ""; // Reset selection
+      activeSetlist.style.display = "none";
       return;
     }
     if (!selectedSetlistId) {
       activeSetlist.style.display = "none";
+      createSetlistForm.style.display = "none";
       return;
     }
 
     const savedSetlists = JSON.parse(localStorage.getItem("setlists"));
     const setlist = savedSetlists.find((s) => s.id === selectedSetlistId);
     if (setlist) {
+      createSetlistForm.style.display = "none";
       displaySetlist(setlist);
     }
   });

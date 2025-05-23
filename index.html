@@ -17,16 +17,6 @@
   <div class="container">
     <img src="images/esb-logo.png" alt="ESB Logo" class="logo">
 
-    <button id="create-setlist-toggle" class="create-setlist-button">Create New Setlist</button>
-
-    <div id="create-setlist-form" class="setlist-form" style="display: none;">
-      <input type="text" id="new-setlist-name" placeholder="Setlist Name" class="form-input">
-      <div class="button-group">
-        <button id="submit-new-setlist" class="submit-button">Create Setlist</button>
-        <button id="cancel-create-setlist" class="cancel-button">Cancel</button>
-      </div>
-    </div>
-
     <div class="import-section">
       <input type="file" id="import-file" accept=".txt" style="display: none;">
       <button id="import-setlist" class="import-button">Import Song List</button>
@@ -37,6 +27,14 @@
         <select id="setlist-select" class="setlist-select">
           <option value="">-- Set List --</option>
         </select>
+
+        <div id="create-setlist-form" class="setlist-form" style="display: none;">
+          <input type="text" id="new-setlist-name" placeholder="Setlist Name" class="form-input">
+          <div class="button-group">
+            <button id="submit-new-setlist" class="submit-button">Create Setlist</button>
+            <button id="cancel-create-setlist" class="cancel-button">Cancel</button>
+          </div>
+        </div>
 
         <div id="active-setlist" class="active-setlist" style="display: none;">
           <div class="setlist-header">
@@ -51,22 +49,18 @@
       </div>
     </div>
 
-    <button id="add-song-toggle" class="add-song-button">Add New Song</button>
-
-    <div id="add-song-form" class="add-song-form" style="display: none;">
-      <div><input type="text" id="new-song-name" placeholder="Song Name" class="form-input"></div>
-      <div><input type="text" id="new-song-artist" placeholder="Artist Name" class="form-input"></div>
-      <div><input type="number" id="new-song-bpm" placeholder="BPM" min="40" max="240" class="form-input"></div>
-      <div class="button-group">
-        <button id="submit-new-song" class="submit-button">Add Song</button>
-        <button id="cancel-add-song" class="cancel-button">Cancel</button>
-      </div>
-    </div>
-
-    <label for="song-select">Choose a Song:</label>
     <div id="song-dropdown" class="song-dropdown">
       <button id="song-dropdown-trigger" class="song-dropdown-trigger"><span class="dropdown-trigger-text">Choose a Song</span><span class="dropdown-trigger-arrow">▼</span></button>
       <div id="song-list-dropdown" class="song-list-dropdown" style="display:none;"></div>
+      <div id="add-song-form" class="add-song-form" style="display: none;">
+        <div><input type="text" id="new-song-name" placeholder="Song Name" class="form-input"></div>
+        <div><input type="text" id="new-song-artist" placeholder="Artist Name" class="form-input"></div>
+        <div><input type="number" id="new-song-bpm" placeholder="BPM" min="40" max="240" class="form-input"></div>
+        <div class="button-group">
+          <button id="submit-new-song" class="submit-button">Add Song</button>
+          <button id="cancel-add-song" class="cancel-button">Cancel</button>
+        </div>
+      </div>
     </div>
 
     <label>BPM: <span id="bpm-display">120</span></label>
