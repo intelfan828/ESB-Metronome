@@ -562,20 +562,26 @@ function initializeUI() {
     const artistInput = document.getElementById("new-song-artist");
     const bpmInput = document.getElementById("new-song-bpm");
 
-    const song = saveNewSong(
-      nameInput.value.trim(),
-      artistInput.value.trim(),
-      parseInt(bpmInput.value)
-    );
+    const name = nameInput.value.trim();
+    const artist = artistInput.value.trim();
+    const bpm = parseInt(bpmInput.value);
 
-    if (song) {
-      addSongToSelect(song, songSelect);
-      nameInput.value = "";
-      artistInput.value = "";
-      bpmInput.value = "";
-      addSongForm.style.display = "none";
-    } else {
+    if (!name || !artist || isNaN(bpm) || bpm < 40 || bpm > 240) {
       alert("Please fill in all fields correctly. BPM must be between 40 and 240.");
+      return;
+    }
+
+    if (confirm(`Add new song:\nName: ${name}\nArtist: ${artist}\nBPM: ${bpm}`)) {
+      const song = saveNewSong(name, artist, bpm);
+      if (song) {
+        customSongList.push({ ...song, id: `custom-${song.name}-${song.artist}`, isCustom: true });
+        saveCustomSongList();
+        renderSongList();
+        nameInput.value = "";
+        artistInput.value = "";
+        bpmInput.value = "";
+        addSongForm.style.display = "none";
+      }
     }
   });
 
