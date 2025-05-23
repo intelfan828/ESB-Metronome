@@ -375,6 +375,38 @@ cancelAddSong.addEventListener("click", () => {
 // Load saved songs when page loads
 loadSavedSongs();
 
+// Initialize song select with predefined songs
+function initializeSongSelect() {
+  // Group songs by label
+  const songsByLabel = {};
+  songList.forEach(song => {
+    if (!songsByLabel[song.label]) {
+      songsByLabel[song.label] = [];
+    }
+    songsByLabel[song.label].push(song);
+  });
+
+  // Create optgroups for each label
+  Object.keys(songsByLabel).sort().forEach(label => {
+    const optgroup = document.createElement("optgroup");
+    optgroup.label = label;
+    
+    // Sort songs within each label by name
+    songsByLabel[label].sort((a, b) => a.name.localeCompare(b.name)).forEach(song => {
+      const option = document.createElement("option");
+      option.value = song.bpm;
+      option.text = `${song.name} - ${song.label}`;
+      option.dataset.artist = song.label;
+      optgroup.appendChild(option);
+    });
+    
+    songSelect.appendChild(optgroup);
+  });
+}
+
+// Initialize the song select when page loads
+initializeSongSelect();
+
 // Load saved BPM values from localStorage
 function loadSavedBpm() {
   const savedBpm = localStorage.getItem("savedBpm");
