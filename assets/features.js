@@ -335,6 +335,67 @@ function initializeUI() {
     }
   });
 
+  // Save BPM button
+  saveBpmButton.addEventListener("click", () => {
+    const selectedOption = songSelect.options[songSelect.selectedIndex];
+    if (!selectedOption || !selectedOption.value) {
+      alert("Please select a song first");
+      return;
+    }
+
+    const newBpm = parseInt(bpmInput.value);
+    if (isNaN(newBpm) || newBpm < 40 || newBpm > 240) {
+      alert("BPM must be between 40 and 240");
+      return;
+    }
+
+    // Update the song in the select dropdown
+    selectedOption.value = newBpm;
+
+    // Update the song in customSongs if it exists
+    const savedSongs = localStorage.getItem("customSongs");
+    if (savedSongs) {
+      const songs = JSON.parse(savedSongs);
+      const songName = selectedOption.text.split(' - ')[0];
+      const songIndex = songs.findIndex(s => s.name === songName);
+      if (songIndex !== -1) {
+        songs[songIndex].bpm = newBpm;
+        localStorage.setItem("customSongs", JSON.stringify(songs));
+      }
+    }
+
+    // Update the song in all setlists
+    const savedSetlists = localStorage.getItem("setlists");
+    if (savedSetlists) {
+      const setlists = JSON.parse(savedSetlists);
+      const songName = selectedOption.text.split(' - ')[0];
+      let updated = false;
+
+      setlists.forEach(setlist => {
+        setlist.songs.forEach(song => {
+          if (song.name === songName) {
+            song.bpm = newBpm;
+            updated = true;
+          }
+        });
+      });
+
+      if (updated) {
+        localStorage.setItem("setlists", JSON.stringify(setlists));
+        // Refresh the current setlist display if one is selected
+        const selectedSetlistId = setlistSelect.value;
+        if (selectedSetlistId) {
+          const currentSetlist = setlists.find(s => s.id === selectedSetlistId);
+          if (currentSetlist) {
+            displaySetlist(currentSetlist);
+          }
+        }
+      }
+    }
+
+    alert("BPM saved successfully!");
+  });
+
   // Song selection
   songSelect.addEventListener("change", () => {
     const selectedBpm = songSelect.value;
