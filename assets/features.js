@@ -191,6 +191,20 @@ function handleSongRowClick(song) {
 function renderSongList() {
   songListDropdown.innerHTML = '';
 
+  // Add New Song row
+  const addNewSongRow = document.createElement('div');
+  addNewSongRow.className = 'song-list-row add-new-song-row';
+  addNewSongRow.innerHTML = `
+    <span class="add-new-song-label" style="flex:1; text-align:center; font-weight:bold; color:#1976D2; cursor:pointer;">+ Add New Song</span>
+  `;
+  songListDropdown.appendChild(addNewSongRow);
+
+  // Add click handler for Add New Song
+  addNewSongRow.querySelector('.add-new-song-label').addEventListener('click', () => {
+    addSongForm.style.display = 'block';
+    closeSongDropdown();
+  });
+
   // Select All row
   const selectAllRow = document.createElement('div');
   selectAllRow.className = 'song-list-row select-all-row';
@@ -288,7 +302,6 @@ function renderSongList() {
     });
   });
 }
-
 function saveCustomSongList() {
   // Save only custom songs to localStorage
   localStorage.setItem('customSongs', JSON.stringify(customSongList.filter(s => s.isCustom)));
@@ -352,7 +365,7 @@ function loadSetlists(setlistSelect) {
   const savedSetlists = localStorage.getItem("setlists");
   if (savedSetlists) {
     const setlists = JSON.parse(savedSetlists);
-    setlistSelect.innerHTML = '<option value="">-- Select a Setlist --</option>';
+    setlistSelect.innerHTML = '<option value="">-- Set List --</option>';
     setlists.forEach((setlist) => {
       const option = document.createElement("option");
       option.value = setlist.id;
@@ -726,3 +739,4 @@ function saveNewSong(name, artist, bpm) {
   localStorage.setItem("customSongs", JSON.stringify(songs));
   return song;
 }
+
