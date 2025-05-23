@@ -64,9 +64,10 @@
     </div>
 
     <label for="song-select">Choose a Song:</label>
-    <select id="song-select">
-      <option value="">-- Select a song --</option>
-    </select>
+    <div id="song-dropdown" class="song-dropdown">
+      <button id="song-dropdown-trigger" class="song-dropdown-trigger"><span class="dropdown-trigger-text">Choose a Song</span><span class="dropdown-trigger-arrow">▼</span></button>
+      <div id="song-list-dropdown" class="song-list-dropdown" style="display:none;"></div>
+    </div>
 
     <label>BPM: <span id="bpm-display">120</span></label>
     <input type="range" id="bpm" min="40" max="240" value="120">

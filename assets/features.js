@@ -116,63 +116,206 @@ const deleteSetlist = document.getElementById("delete-setlist");
 const importSetlist = document.getElementById("import-setlist");
 const importFile = document.getElementById("import-file");
 
-// Song Management
-function addSongToSelect(song, songSelect) {
-  const { name, artist, bpm } = song;
-  const firstLetter = name.charAt(0).toUpperCase();
+const songListContainer = document.getElementById("song-list-container");
+let customSongList = [];
+let selectedSongs = new Set();
+let selectAllChecked = false;
+let selectedSongId = null;
 
-  let optgroup = Array.from(songSelect.getElementsByTagName("optgroup")).find(
-    (group) => group.label === firstLetter
-  );
+// Update references for dropdown
+const songDropdownTrigger = document.getElementById("song-dropdown-trigger");
+const songListDropdown = document.getElementById("song-list-dropdown");
 
-  if (!optgroup) {
-    optgroup = document.createElement("optgroup");
-    optgroup.label = firstLetter;
-    songSelect.appendChild(optgroup);
-  }
+let dropdownOpen = false;
 
-  const option = document.createElement("option");
-  option.value = bpm;
-  option.text = artist.trim() ? `${name} - ${artist}` : name;
-  option.dataset.artist = artist;
+function openSongDropdown() {
+  songListDropdown.style.display = 'block';
+  dropdownOpen = true;
+}
+function closeSongDropdown() {
+  songListDropdown.style.display = 'none';
+  dropdownOpen = false;
+}
 
-  const options = Array.from(optgroup.getElementsByTagName("option"));
-  const insertIndex = options.findIndex((opt) => opt.text > option.text);
-
-  if (insertIndex === -1) {
-    optgroup.appendChild(option);
+songDropdownTrigger.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (dropdownOpen) {
+    closeSongDropdown();
   } else {
-    optgroup.insertBefore(option, options[insertIndex]);
+    openSongDropdown();
+    renderSongList();
+  }
+});
+
+document.addEventListener('click', (e) => {
+  if (dropdownOpen && !songListDropdown.contains(e.target) && e.target !== songDropdownTrigger) {
+    closeSongDropdown();
+  }
+});
+
+const dropdownTriggerText = document.querySelector('.dropdown-trigger-text');
+
+function updateDropdownTriggerText() {
+  if (selectedSongId) {
+    const song = customSongList.find(s => s.id === selectedSongId);
+    if (song) {
+      dropdownTriggerText.textContent = song.artist && song.artist.trim() ? `${song.name} - ${song.artist}` : song.name;
+      return;
+    }
+  }
+  dropdownTriggerText.textContent = 'Choose a Song';
+}
+
+function handleSongRowClick(song) {
+  selectedSongId = song.id;
+  bpmInput.value = song.bpm;
+  bpmDisplay.textContent = song.bpm;
+  renderSongList(); // highlight selected
+  updateDropdownTriggerText();
+
+  // Add to setlist if one is selected
+  const selectedSetlistId = setlistSelect.value;
+  if (selectedSetlistId) {
+    const songToAdd = {
+      name: song.name,
+      artist: song.artist,
+      bpm: song.bpm
+    };
+    const updatedSetlist = addSongToSetlist(songToAdd, selectedSetlistId);
+    if (updatedSetlist) {
+      displaySetlist(updatedSetlist);
+    }
   }
 }
 
-function saveNewSong(name, artist, bpm) {
-  if (!name || !artist || isNaN(bpm) || bpm < 40 || bpm > 240) {
-    return null;
-  }
+function renderSongList() {
+  songListDropdown.innerHTML = '';
 
-  const song = { name, artist, bpm };
-  const savedSongs = localStorage.getItem("customSongs");
-  const songs = savedSongs ? JSON.parse(savedSongs) : [];
-  songs.push(song);
-  localStorage.setItem("customSongs", JSON.stringify(songs));
-  return song;
+  // Select All row
+  const selectAllRow = document.createElement('div');
+  selectAllRow.className = 'song-list-row select-all-row';
+  selectAllRow.innerHTML = `
+    <input type=\"checkbox\" id=\"select-all-songs\" ${selectAllChecked ? 'checked' : ''}>
+    <span class=\"song-divider\"></span>
+    <span class=\"select-all-label\" style=\"flex:1; text-align:center; font-weight:bold;\">Select All Songs</span>
+    <span class=\"song-divider\"></span>
+    <button id=\"delete-selected-songs\" class=\"delete-song-btn\">🗑️</button>
+  `;
+  songListDropdown.appendChild(selectAllRow);
+
+  selectAllRow.querySelector('#select-all-songs').addEventListener('change', (e) => {
+    selectAllChecked = e.target.checked;
+    if (selectAllChecked) {
+      customSongList.forEach(song => selectedSongs.add(song.id));
+    } else {
+      selectedSongs.clear();
+    }
+    renderSongList();
+  });
+
+  selectAllRow.querySelector('#delete-selected-songs').addEventListener('click', () => {
+    if (selectedSongs.size === 0) return;
+    if (!confirm('Delete all selected songs?')) return;
+    customSongList = customSongList.filter(song => !selectedSongs.has(song.id));
+    selectedSongs.clear();
+    selectAllChecked = false;
+    saveCustomSongList();
+    renderSongList();
+    updateDropdownTriggerText();
+  });
+
+  // Group and sort songs by label
+  const groups = {};
+  customSongList.forEach(song => {
+    const label = song.label ? song.label.toUpperCase() : '#';
+    if (!groups[label]) groups[label] = [];
+    groups[label].push(song);
+  });
+  const sortedLabels = Object.keys(groups).sort();
+
+  sortedLabels.forEach(label => {
+    // Label header
+    const labelRow = document.createElement('div');
+    labelRow.className = 'song-list-label-row';
+    labelRow.innerHTML = `
+      <span class=\"label-placeholder\"></span>
+      <span class=\"label-text\">${label}</span>
+    `;
+    songListDropdown.appendChild(labelRow);
+
+    // Sort songs in this group
+    groups[label].sort((a, b) => a.name.localeCompare(b.name));
+    groups[label].forEach(song => {
+      const row = document.createElement('div');
+      row.className = 'song-list-row';
+      if (song.id === selectedSongId) {
+        row.style.background = '#1976D2';
+        row.style.color = 'white';
+      }
+      row.innerHTML = `
+        <input type=\"checkbox\" class=\"song-checkbox\" data-id=\"${song.id}\" ${selectedSongs.has(song.id) ? 'checked' : ''}>
+        <span class=\"song-divider\"></span>
+        <span class=\"song-name\" style=\"flex:1; cursor:pointer;\">${song.artist && song.artist.trim() ? `${song.name} - ${song.artist}` : song.name}</span>
+        <span class=\"song-divider\"></span>
+        <button class=\"delete-song-btn\" data-id=\"${song.id}\">🗑️</button>
+      `;
+      // Checkbox event
+      row.querySelector('.song-checkbox').addEventListener('change', (e) => {
+        if (e.target.checked) {
+          selectedSongs.add(song.id);
+        } else {
+          selectedSongs.delete(song.id);
+          selectAllChecked = false;
+        }
+        renderSongList();
+      });
+      // Delete button event
+      row.querySelector('.delete-song-btn').addEventListener('click', () => {
+        if (!confirm(`Delete song: ${song.name}?`)) return;
+        customSongList = customSongList.filter(s => s.id !== song.id);
+        selectedSongs.delete(song.id);
+        if (selectedSongId === song.id) selectedSongId = null;
+        saveCustomSongList();
+        renderSongList();
+        updateDropdownTriggerText();
+      });
+      // Song row click (select song)
+      row.querySelector('.song-name').addEventListener('click', () => {
+        handleSongRowClick(song);
+        closeSongDropdown();
+      });
+      songListDropdown.appendChild(row);
+    });
+  });
 }
 
-function loadSavedSongs(songSelect) {
-  // Load initial songs from songData.js
+function saveCustomSongList() {
+  // Save only custom songs to localStorage
+  localStorage.setItem('customSongs', JSON.stringify(customSongList.filter(s => s.isCustom)));
+}
+
+function loadCustomSongList() {
+  // Load from window.songList and customSongs
+  customSongList = [];
   if (window.songList) {
     window.songList.forEach(song => {
-      addSongToSelect(song, songSelect);
+      customSongList.push({ ...song, id: `core-${song.name}-${song.artist}` });
     });
   }
-
-  // Load custom songs from localStorage
-  const savedSongs = localStorage.getItem("customSongs");
+  const savedSongs = localStorage.getItem('customSongs');
   if (savedSongs) {
-    const songs = JSON.parse(savedSongs);
-    songs.forEach((song) => addSongToSelect(song, songSelect));
+    JSON.parse(savedSongs).forEach(song => {
+      // Ensure label exists
+      if (!song.label) song.label = song.name.charAt(0).toUpperCase();
+      customSongList.push({ ...song, id: `custom-${song.name}-${song.artist}`, isCustom: true });
+    });
   }
+}
+
+// Replace loadSavedSongs(songSelect) with:
+function initializeSongListUI() {
+  loadCustomSongList();
+  renderSongList();
 }
 
 // Setlist Management
@@ -337,52 +480,37 @@ function initializeUI() {
 
   // Save BPM button
   saveBpmButton.addEventListener("click", () => {
-    const selectedOption = songSelect.options[songSelect.selectedIndex];
-    if (!selectedOption || !selectedOption.value) {
+    if (!selectedSongId) {
       alert("Please select a song first");
       return;
     }
-
     const newBpm = parseInt(bpmInput.value);
     if (isNaN(newBpm) || newBpm < 40 || newBpm > 240) {
       alert("BPM must be between 40 and 240");
       return;
     }
-
-    // Update the song in the select dropdown
-    selectedOption.value = newBpm;
-
-    // Update the song in customSongs if it exists
-    const savedSongs = localStorage.getItem("customSongs");
-    if (savedSongs) {
-      const songs = JSON.parse(savedSongs);
-      const songName = selectedOption.text.split(' - ')[0];
-      const songIndex = songs.findIndex(s => s.name === songName);
-      if (songIndex !== -1) {
-        songs[songIndex].bpm = newBpm;
-        localStorage.setItem("customSongs", JSON.stringify(songs));
-      }
+    // Update in customSongList
+    const song = customSongList.find(s => s.id === selectedSongId);
+    if (song) {
+      song.bpm = newBpm;
+      saveCustomSongList();
+      renderSongList();
     }
-
-    // Update the song in all setlists
+    // Update in setlists
     const savedSetlists = localStorage.getItem("setlists");
     if (savedSetlists) {
       const setlists = JSON.parse(savedSetlists);
-      const songName = selectedOption.text.split(' - ')[0];
       let updated = false;
-
       setlists.forEach(setlist => {
-        setlist.songs.forEach(song => {
-          if (song.name === songName) {
-            song.bpm = newBpm;
+        setlist.songs.forEach(s => {
+          if (s.name === song.name) {
+            s.bpm = newBpm;
             updated = true;
           }
         });
       });
-
       if (updated) {
         localStorage.setItem("setlists", JSON.stringify(setlists));
-        // Refresh the current setlist display if one is selected
         const selectedSetlistId = setlistSelect.value;
         if (selectedSetlistId) {
           const currentSetlist = setlists.find(s => s.id === selectedSetlistId);
@@ -392,39 +520,7 @@ function initializeUI() {
         }
       }
     }
-
     alert("BPM saved successfully!");
-  });
-
-  // Song selection
-  songSelect.addEventListener("change", () => {
-    const selectedBpm = songSelect.value;
-    if (selectedBpm) {
-      bpmInput.value = selectedBpm;
-      bpmDisplay.textContent = selectedBpm;
-      if (isMetronomeRunning()) {
-        stopMetronome();
-        startMetronome(parseInt(selectedBpm));
-      }
-
-      // Add song to active setlist if one is selected
-      const selectedSetlistId = setlistSelect.value;
-      if (selectedSetlistId) {
-        const selectedOption = songSelect.options[songSelect.selectedIndex];
-        const songName = selectedOption.text.split(' - ')[0];
-        const artist = selectedOption.dataset.artist;
-        const song = {
-          name: songName,
-          artist: artist,
-          bpm: parseInt(selectedBpm)
-        };
-        
-        const updatedSetlist = addSongToSetlist(song, selectedSetlistId);
-        if (updatedSetlist) {
-          displaySetlist(updatedSetlist);
-        }
-      }
-    }
   });
 
   // Start/Stop button
@@ -574,7 +670,8 @@ function initializeUI() {
   });
 
   // Initialize
-  loadSavedSongs(songSelect);
+  initializeSongListUI();
+  updateDropdownTriggerText();
   loadSetlists(setlistSelect);
 }
 
@@ -591,3 +688,17 @@ document.addEventListener(
 
 // Initialize UI when DOM is loaded
 document.addEventListener('DOMContentLoaded', initializeUI);
+
+function saveNewSong(name, artist, bpm) {
+  if (!name || !artist || isNaN(bpm) || bpm < 40 || bpm > 240) {
+    return null;
+  }
+  // Set label to first letter of name (uppercased)
+  const label = name.charAt(0).toUpperCase();
+  const song = { name, artist, bpm, label };
+  const savedSongs = localStorage.getItem("customSongs");
+  const songs = savedSongs ? JSON.parse(savedSongs) : [];
+  songs.push(song);
+  localStorage.setItem("customSongs", JSON.stringify(songs));
+  return song;
+}
