@@ -1,0 +1,413 @@
+body {
+  background-color: #222;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  text-align: center;
+  padding: 40px 20px;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.logo {
+  max-width: 200px;
+  height: auto;
+  margin-bottom: 30px;
+}
+
+select,
+button,
+input[type="range"] {
+  font-size: 18px;
+  padding: 12px;
+  margin: 8px 0;
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 8px;
+  border: none;
+  background-color: #444;
+  color: white;
+  width: 100%;
+  max-width: 400px;
+}
+
+button {
+  background-color: #4CAF50;
+  width: 140px;
+  height: 48px;
+  cursor: pointer;
+  margin: 10px 0;
+  padding: 0;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: none;
+  border-radius: 8px;
+}
+
+.sound-toggle {
+  background-color: #666;
+}
+
+.sound-toggle.active {
+  background-color: #4CAF50;
+}
+
+.save-button {
+  background-color: #2196F3;
+}
+
+.save-button:hover {
+  background-color: #1976D2;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+button:active {
+  background-color: #45a049;
+}
+
+input[type="range"] {
+  height: 8px;
+  background: #444;
+  border-radius: 4px;
+  padding: 0;
+  margin: 15px 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  background: #4CAF50;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.beat-lights-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.beat-light {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #90ee90;
+  transition: background-color 0.2s ease;
+}
+
+label {
+  display: block;
+  margin: 10px 0;
+  font-size: 18px;
+}
+
+.bright {
+  background-color: #ffffff !important;
+  animation: none !important;
+}
+
+.pulse {
+  animation: pulse 0.6s infinite alternate;
+}
+
+@keyframes pulse {
+  from {
+    opacity: 0.5;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 20px 15px;
+  }
+
+  .logo {
+    max-width: 150px;
+    margin-bottom: 20px;
+  }
+
+  select,
+  input[type="range"] {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .beat-light {
+    width: 50px;
+    height: 50px;
+  }
+
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .button-group button {
+    width: 300px !important;
+    margin: 0 !important;
+  }
+
+  .form-input {
+    width: 276px !important;
+  }
+
+  .setlist-management {
+    max-width: 300px;
+  }
+
+  .setlist-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .setlist-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .setlist-actions button {
+    width: 300px !important;
+  }
+
+  .add-song-button {
+    width: 300px !important;
+  }
+
+  .create-setlist-button {
+    width: 300px !important;
+  }
+
+  .add-song-form {
+    width: 300px !important;
+  }
+
+  .setlist-form {
+    width: 300px !important;
+  }
+
+  .import-button {
+    width: 300px !important;
+  }
+}
+
+.add-song-button {
+  background-color: #FF9800;
+  margin-bottom: 20px;
+  width: 400px;
+}
+
+.add-song-button:hover {
+  background-color: #F57C00;
+}
+
+.add-song-form {
+  background-color: #333;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  padding: 20px;
+}
+
+.form-input {
+  width: 346px;
+  padding: 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 8px;
+  background-color: #444;
+  color: white;
+  font-size: 16px;
+}
+
+.submit-button {
+  background-color: #4CAF50;
+}
+
+.cancel-button {
+  background-color: #f44336;
+}
+
+.setlist-management {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
+}
+
+.create-setlist-button {
+  background-color: #9C27B0;
+  width: 400px;
+}
+
+.create-setlist-button:hover {
+  background-color: #7B1FA2;
+}
+
+.setlist-form {
+  background-color: #333;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+}
+
+.setlist-select {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.active-setlist {
+  background-color: #333;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.setlist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.setlist-header h3 {
+  margin: 0;
+  color: white;
+}
+
+.setlist-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.export-button {
+  background-color: #2196F3;
+}
+
+.export-button:hover {
+  background-color: #1976D2;
+}
+
+.delete-button {
+  background-color: #f44336;
+}
+
+.delete-button:hover {
+  background-color: #d32f2f;
+}
+
+.setlist-songs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.setlist-song {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #444;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.setlist-song-info {
+  flex-grow: 1;
+}
+
+.setlist-song-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.move-button {
+  background-color: #666;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  font-size: 14px;
+}
+
+.move-button:hover {
+  background-color: #555;
+}
+
+.import-section {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.import-button {
+  background-color: #4CAF50;
+  width: 400px;
+}
+
+.import-button:hover {
+  background-color: #45a049;
+}
+
+
+
+
+.song-item {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+}
+
+.song-item input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.delete-selected {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+optgroup {
+  border: 1px solid #ccc;
+  margin: 5px 0;
+}
+
+optgroup label {
+  font-weight: bold;
+  padding: 5px;
+}

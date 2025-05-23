@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="ESB Metronome">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <title>ESB Metronome</title>
+  <link rel="stylesheet" type="text/css" href="assets/style.css">
+</head>
+
+<body>
+  <div class="container">
+    <img src="images/esb-logo.png" alt="ESB Logo" class="logo">
+
+    <button id="create-setlist-toggle" class="create-setlist-button">Create New Setlist</button>
+
+    <div id="create-setlist-form" class="setlist-form" style="display: none;">
+      <input type="text" id="new-setlist-name" placeholder="Setlist Name" class="form-input">
+      <div class="button-group">
+        <button id="submit-new-setlist" class="submit-button">Create Setlist</button>
+        <button id="cancel-create-setlist" class="cancel-button">Cancel</button>
+      </div>
+    </div>
+
+    <div class="import-section">
+      <input type="file" id="import-file" accept=".txt" style="display: none;">
+      <button id="import-setlist" class="import-button">Import Song List</button>
+    </div>
+
+    <div class="setlist-management">
+      <div id="setlist-container" class="setlist-container">
+        <select id="setlist-select" class="setlist-select">
+          <option value="">-- Select a Setlist --</option>
+        </select>
+
+        <div id="active-setlist" class="active-setlist" style="display: none;">
+          <div class="setlist-header">
+            <h3 id="current-setlist-name"></h3>
+            <div class="setlist-actions">
+              <button id="export-setlist" class="export-button">Export Setlist</button>
+              <button id="delete-setlist" class="delete-button">Delete Setlist</button>
+            </div>
+          </div>
+          <div id="setlist-songs" class="setlist-songs"></div>
+        </div>
+      </div>
+    </div>
+
+    <button id="add-song-toggle" class="add-song-button">Add New Song</button>
+
+    <div id="add-song-form" class="add-song-form" style="display: none;">
+      <div><input type="text" id="new-song-name" placeholder="Song Name" class="form-input"></div>
+      <div><input type="text" id="new-song-artist" placeholder="Artist Name" class="form-input"></div>
+      <div><input type="number" id="new-song-bpm" placeholder="BPM" min="40" max="240" class="form-input"></div>
+      <div class="button-group">
+        <button id="submit-new-song" class="submit-button">Add Song</button>
+        <button id="cancel-add-song" class="cancel-button">Cancel</button>
+      </div>
+    </div>
+
+    <label for="song-select">Choose a Song:</label>
+    <select id="song-select">
+      <option value="">-- Select a song --</option>
+    </select>
+
+    <label>BPM: <span id="bpm-display">120</span></label>
+    <input type="range" id="bpm" min="40" max="240" value="120">
+    <div class="button-group">
+      <button id="start-stop">Start</button>
+      <button id="sound-toggle" class="sound-toggle">🔇 Sound</button>
+      <button id="save-bpm" class="save-button">💾 Save BPM</button>
+    </div>
+
+    <div class="beat-lights-container">
+      <div class="beat-light" id="light-0"></div>
+      <div class="beat-light" id="light-1"></div>
+      <div class="beat-light" id="light-2"></div>
+      <div class="beat-light" id="light-3"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="assets/features.js"></script>
+</body>
+
+</html>
