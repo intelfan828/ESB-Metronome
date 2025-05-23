@@ -21,19 +21,11 @@ A modern, offline-capable metronome web application designed for musicians. Keep
 2. Open `index.html` in your web browser
 3. Start practicing!
 
-## 💻 Usage
-
-- Use the tempo slider to adjust the speed
-- Select your desired time signature
-- Click the play button to start/stop the metronome
-- The app works offline once installed
-
 ## 🛠️ Built With
 
 - HTML5
 - CSS3
 - JavaScript
-- Service Workers for offline functionality
 
 ## 📧 Contact
 
