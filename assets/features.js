@@ -133,7 +133,7 @@ function addSongToSelect(song, songSelect) {
 
   const option = document.createElement("option");
   option.value = bpm;
-  option.text = `${name} - ${artist}`;
+  option.text = artist.trim() ? `${name} - ${artist}` : name;
   option.dataset.artist = artist;
 
   const options = Array.from(optgroup.getElementsByTagName("option"));
