@@ -298,8 +298,18 @@ function loadCustomSongList() {
   // Load from window.songList and customSongs
   customSongList = [];
   if (window.songList) {
+    // Get saved core song BPMs from localStorage
+    const savedCoreBpms = localStorage.getItem('coreSongBpms');
+    const coreBpms = savedCoreBpms ? JSON.parse(savedCoreBpms) : {};
+    
     window.songList.forEach(song => {
-      customSongList.push({ ...song, id: `core-${song.name}-${song.artist}` });
+      // Use saved BPM if it exists, otherwise use original BPM
+      const savedBpm = coreBpms[song.name];
+      customSongList.push({ 
+        ...song, 
+        bpm: savedBpm !== undefined ? savedBpm : song.bpm,
+        id: `core-${song.name}-${song.artist}` 
+      });
     });
   }
   const savedSongs = localStorage.getItem('customSongs');
@@ -495,6 +505,14 @@ function initializeUI() {
       song.bpm = newBpm;
       saveCustomSongList();
       renderSongList();
+
+      // Save core song BPM changes to localStorage
+      if (selectedSongId.startsWith('core-')) {
+        const savedCoreBpms = localStorage.getItem('coreSongBpms');
+        const coreBpms = savedCoreBpms ? JSON.parse(savedCoreBpms) : {};
+        coreBpms[song.name] = newBpm;
+        localStorage.setItem('coreSongBpms', JSON.stringify(coreBpms));
+      }
     }
     // Update in setlists
     const savedSetlists = localStorage.getItem("setlists");
