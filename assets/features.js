@@ -372,6 +372,11 @@ function loadSetlists(setlistSelect) {
       option.text = setlist.name;
       setlistSelect.appendChild(option);
     });
+    // Add Create New Setlist option
+    const createNewOption = document.createElement("option");
+    createNewOption.value = "create_new";
+    createNewOption.text = "+ Create New Setlist";
+    setlistSelect.appendChild(createNewOption);
   }
 }
 
@@ -634,6 +639,11 @@ function initializeUI() {
 
   setlistSelect.addEventListener("change", () => {
     const selectedSetlistId = setlistSelect.value;
+    if (selectedSetlistId === "create_new") {
+      createSetlistForm.style.display = "block";
+      setlistSelect.value = ""; // Reset selection
+      return;
+    }
     if (!selectedSetlistId) {
       activeSetlist.style.display = "none";
       return;
