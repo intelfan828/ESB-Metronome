@@ -14,7 +14,6 @@ A modern, offline-capable metronome web application designed for musicians. Keep
 ## 📸 Screenshot
 
 ![ESB Metronome Interface](images/screenshot.png)
-*The main interface of ESB Metronome*
 
 ## 🚀 Getting Started
 
